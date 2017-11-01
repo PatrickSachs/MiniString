@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MiniStringLib
 {
-    public class MiniChar : IEnumerable<bool>
+    internal class MiniChar : IEnumerable<bool>
     {
         public readonly bool B1;
         public readonly bool B2;

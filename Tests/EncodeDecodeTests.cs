@@ -41,7 +41,72 @@ namespace Tests
         [TestMethod]
         public void Encode_Hello_World()
         {
-            Assert.IsTrue(PerformEncode("Hello World"));
+            Assert.IsTrue(PerformEncode("Hello_World"));
+        }
+        [TestMethod]
+        public void Encode_MiniString()
+        {
+            Assert.IsTrue(PerformEncode("MiniString"));
+        }
+        [TestMethod]
+        public void Encode_Underscore()
+        {
+            Assert.IsTrue(PerformEncode("_"));
+        }
+        [TestMethod]
+        public void Encode_1()
+        {
+            Assert.IsTrue(PerformEncode("1"));
+        }
+        [TestMethod]
+        public void Encode_7()
+        {
+            Assert.IsTrue(PerformEncode("7"));
+        }
+        [TestMethod]
+        public void Encode_A()
+        {
+            Assert.IsTrue(PerformEncode("A"));
+        }
+        [TestMethod]
+        public void Encode_X()
+        {
+            Assert.IsTrue(PerformEncode("X"));
+        }
+        [TestMethod]
+        public void Encode_Z()
+        {
+            Assert.IsTrue(PerformEncode("Z"));
+        }
+        [TestMethod]
+        public void Encode_a()
+        {
+            Assert.IsTrue(PerformEncode("a"));
+        }
+        [TestMethod]
+        public void Encode_c()
+        {
+            Assert.IsTrue(PerformEncode("c"));
+        }
+        [TestMethod]
+        public void Encode_i()
+        {
+            Assert.IsTrue(PerformEncode("i"));
+        }
+        [TestMethod]
+        public void Encode_z()
+        {
+            Assert.IsTrue(PerformEncode("z"));
+        }
+        [TestMethod]
+        public void Encode_ä()
+        {
+            Assert.IsTrue(PerformEncode("ä"));
+        }
+        [TestMethod]
+        public void Encode_CJK()
+        {
+            Assert.IsTrue(PerformEncode("𤽜"));
         }
         [TestMethod]
         public void Encode_TestFile()

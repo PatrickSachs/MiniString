@@ -6,15 +6,16 @@ namespace MiniStringLib
 {
     /// <summary>
     ///     MiniStrings are 6 bit encoded strings.<br />
-    ///     The following characters are supported: <c>0-9, A-Z, a-z, SPACE, NULL</c><br />
+    ///     The following characters are supported: <c>0-9, A-Z, a-z, _, NULL</c><br />
     ///     Despite the very narrow native character support unicode characters can be encoded in a MiniString, however they
     ///     require 24 bits instead of 6.<br />
     ///     When should you use the MiniString? The MiniString is mainly meant for encoded strings in a scenario when every bit
     ///     counts. This might be when sending data over the network or in very big files. Due to its character limitation it
     ///     is
     ///     recommended to use it in conjunction with machine generated strings(such as IDs).<br />
-    ///     <seealso cref="Encode" />
     /// </summary>
+    /// <seealso href="https://patrick-sachs.de/projekte/ministring/" />
+    /// <seealso cref="Encode" />
     public static class MiniString
     {
         private const bool X = true;
@@ -88,7 +89,7 @@ namespace MiniStringLib
             Register('x', new MiniChar(X, X, X, X, O, O));
             Register('y', new MiniChar(X, X, X, X, O, X));
             Register('z', new MiniChar(X, X, X, X, X, O));
-            Register(' ', new MiniChar(X, X, X, X, X, X));
+            Register('_', new MiniChar(X, X, X, X, X, X));
         }
 
         /// <summary>
@@ -102,19 +103,21 @@ namespace MiniStringLib
             s_ToChar.Add(mc, c);
         }
 
-        // Bitflags:
-        // 0       - escape
-        // 1 - 10  - 1 - 0
-        // 11 - 37 - A-Z
-        // 38 - 63 - a-z
 
         /// <summary>
-        ///     Encodes the given string into a mini string.<br />
-        ///     How is a string encoded?<br />
-        ///     Each supported character of the string is represented by 6 bits.
+        ///     Encodes the given string into a mini string.
         /// </summary>
         /// <param name="str">The string to encode.</param>
         /// <returns>The encoded bytes.</returns>
+        /// <seealso href="https://patrick-sachs.de/projekte/ministring/" />
+        /// <remarks>
+        ///     Bitflags:<br />
+        ///     0       - null<br />
+        ///     1 - 10  - 1 - 0<br />
+        ///     11 - 36 - A-Z<br />
+        ///     37 - 62 - a-z<br />
+        ///     63 - _
+        /// </remarks>
         public static byte[] Encode(string str)
         {
             byte[] bytes;
@@ -143,6 +146,12 @@ namespace MiniStringLib
             return bytes;
         }
 
+        /// <summary>
+        ///     Decodes the given mini string into a regular string.
+        /// </summary>
+        /// <param name="bytes">The beytes to decode.</param>
+        /// <returns>The string.</returns>
+        /// <seealso href="https://patrick-sachs.de/projekte/ministring/" />
         public static string Decode(byte[] bytes)
         {
             StringBuilder builder = new StringBuilder();
@@ -180,33 +189,60 @@ namespace MiniStringLib
             return builder.ToString();
         }
 
-        public static char GetSimpleChar(MiniChar c)
+        /// <summary>
+        ///     Gets the character the given mini char represents.
+        /// </summary>
+        /// <param name="c">The mini character.</param>
+        /// <returns>The character.</returns>
+        internal static char GetSimpleChar(MiniChar c)
         {
             return s_ToChar[c];
         }
 
-        public static MiniChar GetSimpleChar(char c)
+        /// <summary>
+        ///     Gets the mini char the given character represents.
+        /// </summary>
+        /// <param name="c">The cahracter.</param>
+        /// <returns>The mini character or null.</returns>
+        internal static MiniChar GetSimpleChar(char c)
         {
             s_ToMini.TryGetValue(c, out MiniChar chr);
             return chr;
         }
 
-        private static bool GetBit(this ushort b, int bitNumber)
-        {
-            return (b & (1 << bitNumber)) != 0;
-        }
-
-        private static bool GetBit(this byte b, int bitNumber)
-        {
-            return (b & (1 << bitNumber)) != 0;
-        }
-
-        public static IEnumerable<MiniChar> GetComplexChar(ushort codePoint)
+        /// <summary>
+        ///     Gets all mini chars needed to represent a 16-bit UTF-16LE code point.
+        /// </summary>
+        /// <param name="codePoint">The code point.</param>
+        /// <returns>The mini chars.</returns>
+        internal static IEnumerable<MiniChar> GetComplexChar(ushort codePoint)
         {
             yield return s_ToMini['\0'];
             yield return new MiniChar(codePoint.GetBit(3), codePoint.GetBit(2), codePoint.GetBit(1), codePoint.GetBit(0), O, O);
             yield return new MiniChar(codePoint.GetBit(9), codePoint.GetBit(8), codePoint.GetBit(7), codePoint.GetBit(6), codePoint.GetBit(5), codePoint.GetBit(4));
             yield return new MiniChar(codePoint.GetBit(15), codePoint.GetBit(14), codePoint.GetBit(13), codePoint.GetBit(12), codePoint.GetBit(11), codePoint.GetBit(10));
+        }
+
+        /// <summary>
+        ///     Gets the given bit of a ushort.
+        /// </summary>
+        /// <param name="b">The ushort.</param>
+        /// <param name="bitNumber">The bit number.</param>
+        /// <returns>The bit.</returns>
+        private static bool GetBit(this ushort b, int bitNumber)
+        {
+            return (b & (1 << bitNumber)) != 0;
+        }
+
+        /// <summary>
+        ///     Gets the given bit of a byte.
+        /// </summary>
+        /// <param name="b">The byte.</param>
+        /// <param name="bitNumber">The bit number.</param>
+        /// <returns>The bit.</returns>
+        private static bool GetBit(this byte b, int bitNumber)
+        {
+            return (b & (1 << bitNumber)) != 0;
         }
     }
 }

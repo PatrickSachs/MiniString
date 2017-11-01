@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MiniStringLib
 {
-    public class MiniCharInStream : IEnumerable<char>
+    internal class MiniCharInStream : IEnumerable<char>
     {
         private readonly IEnumerable<MiniChar> m_Chars;
 
