@@ -33,7 +33,7 @@ namespace Tests
             Debug.WriteLine(bytes.GetBitString());
             Debug.WriteLine(" -------------------------------- ");
             string decoded = MiniString.Decode(bytes);
-            Debug.WriteLine("Encoded again:");
+            Debug.WriteLine("Decoded again:");
             Debug.WriteLine(decoded);
             return string.Equals(str, decoded, StringComparison.Ordinal);
         }
@@ -109,9 +109,19 @@ namespace Tests
             Assert.IsTrue(PerformEncode("𤽜"));
         }
         [TestMethod]
-        public void Encode_TestFile()
+        public void Encode_TestFile1()
         {
             Assert.IsTrue(PerformEncode(File.ReadAllText("..\\..\\Properties\\test1.txt")));
+        }
+        [TestMethod]
+        public void Encode_TestFile2()
+        {
+            Assert.IsTrue(PerformEncode(File.ReadAllText("..\\..\\Properties\\test2.txt")));
+        }
+        [TestMethod]
+        public void Encode_TestFile3()
+        {
+            Assert.IsTrue(PerformEncode(File.ReadAllText("..\\..\\Properties\\test3.txt")));
         }
     }
 }
